@@ -1,0 +1,42 @@
+### 
+POST http://localhost:3333/livro
+Content-Type: application/json
+
+{
+    "titulo": "Memórias Póstumas de Brás Cubas",
+    "autor": "Machado de Assis",
+    "npaginas": 400,
+    "editora": "Garnier"
+}
+
+###
+
+GET http://localhost:3333/livros
+
+
+### 
+GET http://localhost:3333/livros?search=Duna
+
+### 
+PUT http://localhost:3333/livros/0352e6e8-af45-4725-986f-b9b400497f27
+Content-Type: application/json
+
+{
+    "titulo": "Duna",
+    "autor": "Frank Herbert",
+    "npaginas": 631,
+    "editora": "Aleph"
+}
+
+###
+PATCH http://localhost:3333/livros/0352e6e8-af45-4725-986f-b9b400497f27
+Content-Type: application/json
+
+{
+    "npaginas": 999,
+    "editora": "Just Fly"
+}
+
+###
+
+DELETE http://localhost:3333/livros/ecdba636-9797-452a-8151-95134de1919e
