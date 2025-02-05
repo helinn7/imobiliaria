@@ -6,71 +6,71 @@ import { DatabaseMemory } from "./database-memory.js";
 // Criando o Database
 const database = new DatabaseMemory();
 
-// Criando servidor
+// Criando servidor Fastify
 const server = fastify();
 
-// Criando um livro
-server.post('/livro', (request, reply) => {
-    const { titulo, autor, npaginas, editora } = request.body;
+// Rota para criar um imóvel
+server.post('/imovel', (request, reply) => {
+    const { endereco, tipo, area, valor } = request.body; // Recebe os dados do imóvel a partir do corpo da requisição
 
     database.create({
-        titulo: titulo,
-        autor: autor,
-        npaginas: npaginas,
-        editora: editora
-    });
+        endereco: endereco,
+        tipo: tipo,
+        area: area,
+        valor: valor
+    }); // Salva o imóvel no banco de dados em memória
 
-    return reply.status(201).send();
+    return reply.status(201).send(); // Retorna status de criação bem-sucedida
 });
 
-// Lendo livros cadastrados com filtro opcional
-server.get('/livros', (request) => {
-    const search = request.query.search;
-    const livros = database.list(search);
-    return { livros };
+// Rota para listar imóveis cadastrados com filtro opcional
+server.get('/imoveis', (request) => {
+    const search = request.query.search; // Obtém o parâmetro de pesquisa, se houver
+    const imoveis = database.list(search); // Lista os imóveis com base no filtro
+    return { imoveis }; // Retorna a lista de imóveis
 });
 
-// Atualiza livro totalmente
-server.put('/livros/:id', (request, reply) => {
-    const livroId = request.params.id;
-    const { titulo, autor, npaginas, editora } = request.body;
+// Rota para atualizar totalmente um imóvel
+server.put('/imoveis/:id', (request, reply) => {
+    const imovelId = request.params.id; // Obtém o ID do imóvel a partir dos parâmetros da URL
+    const { endereco, tipo, area, valor } = request.body; // Obtém os dados atualizados
 
-    database.update(livroId, {
-        titulo: titulo,
-        autor: autor,
-        npaginas: npaginas,
-        editora: editora
-    });
+    database.update(imovelId, {
+        endereco: endereco,
+        tipo: tipo,
+        area: area,
+        valor: valor
+    }); // Atualiza o imóvel no banco de dados
 
-    return reply.status(204).send();
+    return reply.status(204).send(); // Retorna status indicando que a operação foi concluída sem conteúdo adicional
 });
 
-// Atualiza livro parcialmente
-server.patch('/livros/:id', (request, reply) => {
-    const livroId = request.params.id;
-    const update = request.body;
+// Rota para atualizar parcialmente um imóvel
+server.patch('/imoveis/:id', (request, reply) => {
+    const imovelId = request.params.id; // Obtém o ID do imóvel a partir dos parâmetros da URL
+    const update = request.body; // Obtém os dados a serem atualizados
 
-    const livroExistente = database.getByID(livroId);
+    const imovelExistente = database.getByID(imovelId); // Busca o imóvel atual pelo ID
 
-    if (!livroExistente) {
-        return reply.status(404).send({ error: "Livro não encontrado" });
+    if (!imovelExistente) { // Verifica se o imóvel existe
+        return reply.status(404).send({ error: "Imóvel não encontrado" }); // Retorna erro caso não seja encontrado
     }
 
-    const novoLivro = { ...livroExistente, ...update };
+    const novoImovel = { ...imovelExistente, ...update }; // Atualiza os campos mantendo os dados existentes
 
-    database.update(livroId, novoLivro);
+    database.update(imovelId, novoImovel); // Salva as alterações no banco de dados
 
-    return reply.status(204).send();
+    return reply.status(204).send(); // Retorna status indicando sucesso
 });
 
-// Exclui livro
-server.delete('/livros/:id', (request, reply) => {
-    const livroId = request.params.id;
-    database.delete(livroId);
-    return reply.status(204).send();
+// Rota para excluir um imóvel
+server.delete('/imoveis/:id', (request, reply) => {
+    const imovelId = request.params.id; // Obtém o ID do imóvel a partir dos parâmetros da URL
+    database.delete(imovelId); // Remove o imóvel do banco de dados
+    return reply.status(204).send(); // Retorna status indicando que a operação foi concluída sem conteúdo adicional
 });
 
-// Criando o servidor na porta 3333
+// Inicia o servidor na porta 3333
 server.listen({ port: 3333 }, () => {
-    console.log("Servidor rodando em http://localhost:3333");
+    console.log("Servidor rodando em http://localhost:3333"); // Exibe mensagem indicando que o servidor está em execução
 });
